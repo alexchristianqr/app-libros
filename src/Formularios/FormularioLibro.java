@@ -408,6 +408,7 @@ public class FormularioLibro extends javax.swing.JFrame {
 
         jLabel7.setText("Nro pag.:");
 
+        btnBuscarPortada.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/picture.png"))); // NOI18N
         btnBuscarPortada.setText("Portada");
         btnBuscarPortada.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -415,6 +416,7 @@ public class FormularioLibro extends javax.swing.JFrame {
             }
         });
 
+        btnGrabar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/save.png"))); // NOI18N
         btnGrabar.setText("Grabar");
         btnGrabar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -422,6 +424,7 @@ public class FormularioLibro extends javax.swing.JFrame {
             }
         });
 
+        btnConsultar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/search.png"))); // NOI18N
         btnConsultar.setText("Consultar");
         btnConsultar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -429,6 +432,7 @@ public class FormularioLibro extends javax.swing.JFrame {
             }
         });
 
+        btnModificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/edit.png"))); // NOI18N
         btnModificar.setText("Modificar");
         btnModificar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -436,6 +440,7 @@ public class FormularioLibro extends javax.swing.JFrame {
             }
         });
 
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/error.png"))); // NOI18N
         btnEliminar.setText("Eliminar");
         btnEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -444,6 +449,8 @@ public class FormularioLibro extends javax.swing.JFrame {
         });
 
         lblIcono.setBackground(new java.awt.Color(204, 204, 204));
+        lblIcono.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblIcono.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/folder.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -594,7 +601,7 @@ public class FormularioLibro extends javax.swing.JFrame {
         jLabel9.setText("Nombre del Libro con el Año  de edición mas reciente.");
         jLabel9.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
 
-        btnSalir.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Red"));
+        btnSalir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/exit.png"))); // NOI18N
         btnSalir.setText("Salir");
         btnSalir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -648,8 +655,8 @@ public class FormularioLibro extends javax.swing.JFrame {
                 .addComponent(txt04, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txt05, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 147, Short.MAX_VALUE)
-                .addComponent(btnSalir)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
+                .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
