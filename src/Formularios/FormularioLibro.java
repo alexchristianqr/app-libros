@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.text.DecimalFormat;
+import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -17,7 +18,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author alex
  */
-public final class FormularioLibro extends javax.swing.JFrame {
+public class FormularioLibro extends javax.swing.JFrame {
 
     // Declaración de clases
     Libro libro;
@@ -26,7 +27,7 @@ public final class FormularioLibro extends javax.swing.JFrame {
     String[] cabecera = {"N°", "Codigo", "Nombre de libro", "Tipo", "Clase", "Año", "Num. Pag", "Costo"};
     String[][] data = {};
 
-    // Vairables globales
+    // Variables globales
     int num = 0;
 
     /**
@@ -34,21 +35,54 @@ public final class FormularioLibro extends javax.swing.JFrame {
      */
     public FormularioLibro() {
         initComponents();
-        
+
         modelo = new DefaultTableModel(data, cabecera);
         tblLibros.setModel(modelo);
         arregloLibros = new ArregloLibros();
-        cargarData();
+        cargar();
         actualizarTabla();
         resumen();
         txtCodigo.requestFocus();
     }
-    
-    public void cargarData() {
+
+    /* Mantenimiento MODELO */
+    public int seleccionarTipo(String tipo) {
+        if (tipo.equalsIgnoreCase("PROGRAMACION")) {
+            return 1;
+        } else if (tipo.equalsIgnoreCase("GESTION")) {
+            return 2;
+        } else if (tipo.equalsIgnoreCase("SISTEMAS")) {
+            return 3;
+        } else {
+            return 0;
+        }
+    }
+
+    public int seleccionarClase(String clase) {
+        if (clase.equalsIgnoreCase("A")) {
+            return 1;
+        } else if (clase.equalsIgnoreCase("B")) {
+            return 2;
+        } else if (clase.equalsIgnoreCase("C")) {
+            return 3;
+        } else {
+            return 0;
+        }
+    }
+
+    public String valueToString(Object any) {
+        return String.valueOf(any);
+    }
+
+    public void mensaje(String texto) {
+        JOptionPane.showMessageDialog(this, texto);
+    }
+
+    public void cargar() {
         try {
             FileInputStream fis = new FileInputStream("Libros.bin");
             ObjectInputStream ois = new ObjectInputStream(fis);
-            
+
             if (ois != null) {
                 arregloLibros = (ArregloLibros) ois.readObject();
                 ois.close();
@@ -57,12 +91,12 @@ public final class FormularioLibro extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Error al cargar el archivo binario..." + ex);
         }
     }
-    
+
     public void grabar() {
         try {
             FileOutputStream fos = new FileOutputStream("Libros.bin");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
-            
+
             if (oos != null) {
                 oos.writeObject(arregloLibros);
                 oos.close();
@@ -71,40 +105,13 @@ public final class FormularioLibro extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Error al grabar archivo serializado..." + ex);
         }
     }
-    
-    public void actualizarTabla() {
-        
-        vaciarTabla();
-        
-        int n = arregloLibros.totalLibros();
-        
-        for (int i = 0; i < n; i++) {
-            String codigo = arregloLibros.obtenerLibro(i).getCodigo();
-            String nombre = arregloLibros.obtenerLibro(i).getNombre();
-            String tipo = arregloLibros.obtenerLibro(i).getTipo();
-            String clase = arregloLibros.obtenerLibro(i).getClase();
-            int anio = arregloLibros.obtenerLibro(i).getAnio();
-            int numPagina = arregloLibros.obtenerLibro(i).getNumPagina();
-            double costo = arregloLibros.obtenerLibro(i).getCosto();
-            
-            insertarTabla(i + 1, codigo, nombre, tipo, clase, anio, numPagina, costo);
-        }
-    }
-    
-    public void vaciarTabla() {
-        int filas = tblLibros.getRowCount();
-        
-        for (int i = 0; i < filas; i++) {
-            modelo.removeRow(0);
-        }
-    }
-    
+
     public void resumen() {
         String sA = "", sB = "", sC = "", sD = "";
         int mayor = -99, menor = 999999, sE = 0;
         double mayorCosto = -99;
         int n = arregloLibros.totalLibros();
-        
+
         for (int i = 0; i < n; i++) {
             String codigo = arregloLibros.obtenerLibro(i).getCodigo();
             String nombre = arregloLibros.obtenerLibro(i).getNombre();
@@ -113,45 +120,167 @@ public final class FormularioLibro extends javax.swing.JFrame {
             int anio = arregloLibros.obtenerLibro(i).getAnio();
             int numPagina = arregloLibros.obtenerLibro(i).getNumPagina();
             double costo = arregloLibros.obtenerLibro(i).getCosto();
-            
+
             if (anio > mayor) {
                 mayor = anio;
                 sA = nombre;
             }
-            
+
             if (numPagina < menor) {
                 menor = numPagina;
                 sB = tipo;
             }
-            
+
             if (costo > 100 && tipo.equalsIgnoreCase("GESTION") && clase.equalsIgnoreCase("A")) {
                 sE++;
             }
-            
+
             if (costo > mayorCosto) {
                 mayorCosto = costo;
                 sC = nombre;
                 sD = tipo;
-                
+
             }
         }
-        
+
         txt01.setText(sA);
         txt02.setText(sB);
         txt04.setText(sC);
         txt05.setText(sD);
-        txt03.setText(String.valueOf(sE));
+        txt03.setText(valueToString(sE));
     }
-    
+
+    public void modificar() {
+        String codigo = txtCodigo.getText().toUpperCase();
+        int posicionLibro = arregloLibros.buscarLibro(codigo);
+
+        String nombre = txtNombre.getText().toUpperCase();
+        String tipo = cbxTipo.getSelectedItem().toString();
+        String clase = cbxClase.getSelectedItem().toString();
+        int anio = Integer.parseInt(txtAnioEdicion.getText());
+        int numPagina = Integer.parseInt(txtNumPaginas.getText());
+        double costo = Double.parseDouble(txtCosto.getText());
+        Icon icono = lblIcono.getIcon();
+
+        libro = new Libro(codigo, nombre, tipo, clase, anio, numPagina, costo, icono);
+
+        if (posicionLibro == -1) {
+            arregloLibros.agregarLibro(libro);
+        } else {
+            arregloLibros.reemplazarLibro(posicionLibro, libro);
+            limpiar();
+            grabar();
+            actualizarTabla();
+            resumen();
+            txtCodigo.requestFocus();
+        }
+    }
+
+    public void consultar() {
+        String codigo = txtCodigo.getText().toUpperCase();
+        int posicionLibro = arregloLibros.buscarLibro(codigo);
+
+        if (posicionLibro == -1) {
+            mensaje("Codigo no existe");
+            limpiar();
+        } else {
+            libro = arregloLibros.obtenerLibro(posicionLibro);
+
+            String nombre = libro.getNombre();
+            String tipo = libro.getTipo();
+            String clase = libro.getClase();
+            int anio = libro.getAnio();
+            int numPagina = libro.getNumPagina();
+            double costo = libro.getCosto();
+
+            txtNombre.setText(nombre);
+            cbxTipo.setSelectedIndex(seleccionarTipo(tipo));
+            cbxClase.setSelectedIndex(seleccionarClase(clase));
+            txtAnioEdicion.setText(valueToString(anio));
+            txtNumPaginas.setText(valueToString(numPagina));
+            txtCosto.setText(valueToString(costo));
+            // lblIcono.setText(libro.obtenerPortada());
+
+        }
+    }
+
+    public void eliminar() {
+        consultar();
+
+        String codigo = txtCodigo.getText().toUpperCase();
+        int posicionLibro = arregloLibros.buscarLibro(codigo);
+
+        if (posicionLibro != -1) {
+            int respuesta = JOptionPane.showConfirmDialog(this, "¿Esta seguro de eliminar este registro?", "Responder", 0);
+            if (respuesta == 0) {
+                // arregloLibros.eliminarLibros();
+                arregloLibros.eliminarLibro(codigo);
+                limpiar();
+                grabar();
+                actualizarTabla();
+                resumen();
+                txtCodigo.requestFocus();
+            }
+        }
+    }
+
+    public void insertar() {
+
+    }
+
+    public void limpiar() {
+        txtCodigo.setText("");
+        txtNombre.setText("");
+        cbxTipo.setSelectedIndex(0);
+        cbxClase.setSelectedIndex(0);
+        txtAnioEdicion.setText("");
+        txtNumPaginas.setText("");
+        txtCosto.setText("");
+        lblIcono.setIcon(null);
+
+        txtCodigo.requestFocus(true);
+    }
+
+    /* -- */
+
+ /* Mantenimiento TABLA */
+    public void actualizarTabla() {
+
+        vaciarTabla();
+
+        int n = arregloLibros.totalLibros();
+
+        for (int i = 0; i < n; i++) {
+            String codigo = arregloLibros.obtenerLibro(i).getCodigo();
+            String nombre = arregloLibros.obtenerLibro(i).getNombre();
+            String tipo = arregloLibros.obtenerLibro(i).getTipo();
+            String clase = arregloLibros.obtenerLibro(i).getClase();
+            int anio = arregloLibros.obtenerLibro(i).getAnio();
+            int numPagina = arregloLibros.obtenerLibro(i).getNumPagina();
+            double costo = arregloLibros.obtenerLibro(i).getCosto();
+
+            insertarTabla(i + 1, codigo, nombre, tipo, clase, anio, numPagina, costo);
+        }
+    }
+
+    public void vaciarTabla() {
+        int filas = tblLibros.getRowCount();
+
+        for (int i = 0; i < filas; i++) {
+            modelo.removeRow(0);
+        }
+    }
+
     public void insertarTabla(int num, String codigo, String nombre, String tipo, String clase, int anio, int numPagina, double costo) {
         String formatoCosto;
-        
+
         DecimalFormat df = new DecimalFormat("####.00");
         formatoCosto = df.format(costo);
-        Object[] fila = {num, codigo, nombre, tipo, clase, String.valueOf(anio), String.valueOf(numPagina), formatoCosto};
+        Object[] fila = {num, codigo, nombre, tipo, clase, valueToString(anio), valueToString(numPagina), formatoCosto};
         modelo.addRow(fila);
     }
 
+    /* -- */
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -177,11 +306,11 @@ public final class FormularioLibro extends javax.swing.JFrame {
         txtCosto = new javax.swing.JTextField();
         txtNumPaginas = new javax.swing.JTextField();
         btnBuscarPortada = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
         btnGrabar = new javax.swing.JButton();
         btnConsultar = new javax.swing.JButton();
         btnModificar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
+        lblIcono = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblLibros = new javax.swing.JTable();
@@ -211,9 +340,9 @@ public final class FormularioLibro extends javax.swing.JFrame {
 
         jLabel5.setText("Tipo editorial:");
 
-        cbxTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbxTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-- SELECCIONAR --", "PROGRAMACION", "GESTION", "SISTEMAS" }));
 
-        cbxClase.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbxClase.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-- SELECCIONAR --", "A", "B", "C" }));
 
         jLabel6.setText("Costo:");
 
@@ -221,26 +350,35 @@ public final class FormularioLibro extends javax.swing.JFrame {
 
         btnBuscarPortada.setText("Portada");
 
-        jPanel2.setBackground(new java.awt.Color(204, 204, 204));
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 115, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
         btnGrabar.setText("Grabar");
+        btnGrabar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGrabarActionPerformed(evt);
+            }
+        });
 
         btnConsultar.setText("Consultar");
+        btnConsultar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConsultarActionPerformed(evt);
+            }
+        });
 
         btnModificar.setText("Modificar");
+        btnModificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModificarActionPerformed(evt);
+            }
+        });
 
         btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
+
+        lblIcono.setBackground(new java.awt.Color(204, 204, 204));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -290,15 +428,15 @@ public final class FormularioLibro extends javax.swing.JFrame {
                         .addComponent(btnModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblIcono, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
@@ -329,9 +467,10 @@ public final class FormularioLibro extends javax.swing.JFrame {
                             .addComponent(btnGrabar)
                             .addComponent(btnConsultar)
                             .addComponent(btnModificar)
-                            .addComponent(btnEliminar)))
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(btnEliminar))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(lblIcono, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Relación de Libros"));
@@ -464,6 +603,47 @@ public final class FormularioLibro extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnGrabarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGrabarActionPerformed
+        // TODO add your handling code here:
+
+        String codigo = txtCodigo.getText();
+        String nombre = txtNombre.getText();
+        String tipo = cbxTipo.getSelectedItem().toString();
+        String clase = cbxClase.getSelectedItem().toString();
+        int anio = Integer.parseInt(txtAnioEdicion.getText());
+        int numPagina = Integer.parseInt(txtNumPaginas.getText());
+        double costo = Double.parseDouble(txtCosto.getText());
+        Icon icono = lblIcono.getIcon();
+
+        libro = new Libro(codigo, nombre, tipo, clase, anio, numPagina, costo, icono);
+
+        if (arregloLibros.buscarLibro(libro.getCodigo()) != -1) {
+            mensaje("Codigo repetido");
+        } else {
+            arregloLibros.agregarLibro(libro);
+            insertarTabla(num, codigo, nombre, tipo, clase, anio, numPagina, costo);
+            limpiar();
+            grabar();
+            actualizarTabla();
+            resumen();
+        }
+    }//GEN-LAST:event_btnGrabarActionPerformed
+
+    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
+        // TODO add your handling code here:
+        modificar();
+    }//GEN-LAST:event_btnModificarActionPerformed
+
+    private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
+        // TODO add your handling code here:
+        consultar();
+    }//GEN-LAST:event_btnConsultarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        // TODO add your handling code here:
+        eliminar();
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -519,10 +699,10 @@ public final class FormularioLibro extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblIcono;
     private javax.swing.JTable tblLibros;
     private javax.swing.JTextField txt01;
     private javax.swing.JTextField txt02;

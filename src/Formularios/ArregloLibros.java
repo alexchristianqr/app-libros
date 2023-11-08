@@ -27,7 +27,12 @@ public class ArregloLibros implements Serializable {
         return listaLibros.size();
     }
 
-    public void eliminarLibro(/*String codigo*/) {
+    public void eliminarLibro(String codigo) {
+        int posicionLibro = buscarLibro(codigo);
+        listaLibros.remove(posicionLibro);
+    }
+
+    public void eliminarLibros(/*String codigo*/) {
         for (int i = 0; i < totalLibros(); i++) {
             listaLibros.remove(0);
         }
