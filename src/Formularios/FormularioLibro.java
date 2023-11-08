@@ -1,9 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package Formularios;
 
+import java.awt.Image;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -11,6 +8,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.text.DecimalFormat;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -87,7 +86,7 @@ public class FormularioLibro extends javax.swing.JFrame {
                 arregloLibros = (ArregloLibros) ois.readObject();
                 ois.close();
             }
-        } catch (Exception ex) {
+        } catch (IOException | ClassNotFoundException ex) {
             JOptionPane.showMessageDialog(null, "Error al cargar el archivo binario..." + ex);
         }
     }
@@ -351,6 +350,11 @@ public class FormularioLibro extends javax.swing.JFrame {
         jLabel7.setText("Nro pag.:");
 
         btnBuscarPortada.setText("Portada");
+        btnBuscarPortada.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarPortadaActionPerformed(evt);
+            }
+        });
 
         btnGrabar.setText("Grabar");
         btnGrabar.addActionListener(new java.awt.event.ActionListener() {
@@ -659,6 +663,27 @@ public class FormularioLibro extends javax.swing.JFrame {
         // TODO add your handling code here:
         dispose();
     }//GEN-LAST:event_btnSalirActionPerformed
+
+    private void btnBuscarPortadaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarPortadaActionPerformed
+        // TODO add your handling code here:
+        
+        JFileChooser jfc = new JFileChooser();
+        int option = jfc.showOpenDialog(this);
+        
+        if(option == JFileChooser.APPROVE_OPTION){
+            String file = jfc.getSelectedFile().getPath();
+            
+            lblIcono.setIcon(new ImageIcon(file));
+            
+            ImageIcon icon= new ImageIcon(file);
+            Image img = icon.getImage();
+            Image newImage = img.getScaledInstance(140, 170, java.awt.Image.SCALE_SMOOTH);
+            
+            ImageIcon newIcon = new ImageIcon(newImage);
+            lblIcono.setIcon(newIcon);
+            lblIcono.setSize(140,170);
+        }
+    }//GEN-LAST:event_btnBuscarPortadaActionPerformed
 
     /**
      * @param args the command line arguments
