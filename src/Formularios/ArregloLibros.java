@@ -3,6 +3,8 @@ package Formularios;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/* Iconos: https://www.flaticon.com/packs/essential-collection?k=1699484506937&log-in=email */
+
 public class ArregloLibros implements Serializable {
 
     private ArrayList<Libro> listaLibros;
