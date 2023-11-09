@@ -204,7 +204,7 @@ public class FormLibro extends javax.swing.JFrame {
             txtAnioEdicion.setText(valueToString(anio));
             txtNumPaginas.setText(valueToString(numPagina));
             txtCosto.setText(valueToString(costo));
-            // lblIcono.setText(libro.obtenerPortada());
+            lblIcono.setIcon(libro.getPortada());
 
         }
     }
@@ -347,18 +347,22 @@ public class FormLibro extends javax.swing.JFrame {
             while (j != 0) {
 
                 int posActual = j;
-                int posAnterior = posActual - 1;
+                int posAnterior = j - 1;
 
                 String xActual = arregloLibros.obtenerLibro(posActual).getTipo();
                 String xAnterior = arregloLibros.obtenerLibro(posAnterior).getTipo();
 
-                if (xActual.compareToIgnoreCase(xAnterior) > 0) {
+                if (xActual.compareToIgnoreCase(xAnterior) < 0) {
 
                     aux = arregloLibros.obtenerLibro(posActual);
                     arregloLibros.reemplazarLibro(posActual, arregloLibros.obtenerLibro(posAnterior));
                     arregloLibros.reemplazarLibro(posAnterior, aux);
 
+                } else {
+                    j = 1;
                 }
+
+                j = j - 1;
             }
         }
 
@@ -412,7 +416,11 @@ public class FormLibro extends javax.swing.JFrame {
                     arregloLibros.reemplazarLibro(posActual, arregloLibros.obtenerLibro(posAnterior));
                     arregloLibros.reemplazarLibro(posAnterior, aux);
 
+                } else {
+                    j = 1;
                 }
+
+                j = j - 1;
             }
         }
 
@@ -455,8 +463,8 @@ public class FormLibro extends javax.swing.JFrame {
             menor = p;
 
             for (int q = (p + 1); q < tamano; q++) {
-                int xSiguiente = arregloLibros.obtenerLibro(q).getNumPagina();
-                int xActual = arregloLibros.obtenerLibro(menor).getNumPagina();
+                double xSiguiente = arregloLibros.obtenerLibro(q).getCosto();
+                double xActual = arregloLibros.obtenerLibro(menor).getCosto();
 
                 if (xSiguiente < xActual) {
                     menor = q;
@@ -858,13 +866,43 @@ public class FormLibro extends javax.swing.JFrame {
     private void btnGrabarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGrabarActionPerformed
         // TODO add your handling code here:
 
+        if (txtCodigo.getText().isEmpty()) {
+            mensaje("El campo [codigo] no puede estar vacio");
+            return;
+        }
         String codigo = txtCodigo.getText().toUpperCase();
+
+        if (txtNombre.getText().isEmpty()) {
+            mensaje("El campo [nombre] no puede estar vacio");
+            return;
+        }
         String nombre = txtNombre.getText().toUpperCase();
+
         String tipo = cbxTipo.getSelectedItem().toString();
         String clase = cbxClase.getSelectedItem().toString();
+
+        if (txtAnioEdicion.getText().isEmpty()) {
+            mensaje("El campo [anio] no puede estar vacio");
+            return;
+        }
         int anio = Integer.parseInt(txtAnioEdicion.getText());
+
+        if (txtNumPaginas.getText().isEmpty()) {
+            mensaje("El campo [num_pag] no puede estar vacio");
+            return;
+        }
         int numPagina = Integer.parseInt(txtNumPaginas.getText());
+
+        if (txtCosto.getText().isEmpty()) {
+            mensaje("El campo [costo] no puede estar vacio");
+            return;
+        }
         double costo = Double.parseDouble(txtCosto.getText());
+
+        if (lblIcono.getIcon().toString().isEmpty()) {
+            mensaje("El campo [icono] no puede estar vacio");
+            return;
+        }
         Icon icono = lblIcono.getIcon();
 
         libro = new Libro(codigo, nombre, tipo, clase, anio, numPagina, costo, icono);
@@ -901,6 +939,8 @@ public class FormLibro extends javax.swing.JFrame {
 
     private void cbxOrdenarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxOrdenarActionPerformed
         // TODO add your handling code here:
+
+        System.out.println("El indice es: " + cbxOrdenar.getSelectedIndex());
 
         switch (cbxOrdenar.getSelectedIndex()) {
             case 0:
