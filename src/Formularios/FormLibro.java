@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package Formularios;
 
 import java.awt.Image;
@@ -48,7 +44,9 @@ public class FormLibro extends javax.swing.JFrame {
         txtCodigo.requestFocus();
     }
 
+    //////////////////////////
     /* Mantenimiento MODELO */
+    //////////////////////////
     public int seleccionarTipo(String tipo) {
         if (tipo.equalsIgnoreCase("PROGRAMACION")) {
             return 1;
@@ -245,9 +243,9 @@ public class FormLibro extends javax.swing.JFrame {
         txtCodigo.requestFocus(true);
     }
 
-    /* -- */
-
- /* Mantenimiento TABLA */
+    /////////////////////////
+    /* Mantenimiento TABLA */
+    /////////////////////////
     public void actualizarTabla() {
 
         vaciarTabla();
@@ -286,9 +284,9 @@ public class FormLibro extends javax.swing.JFrame {
         modelo.addRow(fila);
     }
 
-    /* -- */
-
- /* Funciones ORDENAR */
+    ///////////////////////
+    /* Funciones ORDENAR */
+    ///////////////////////
     public void ordenarPorCodigo() {
         int tamano = arregloLibros.totalLibros();
         int menor;
@@ -334,7 +332,6 @@ public class FormLibro extends javax.swing.JFrame {
         actualizarTabla();
     }
 
-    /* -- */
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -765,7 +762,7 @@ public class FormLibro extends javax.swing.JFrame {
 
     private void cbxOrdenarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxOrdenarActionPerformed
         // TODO add your handling code here:
-        
+
         switch (cbxOrdenar.getSelectedIndex()) {
             case 0:
                 cargar();
