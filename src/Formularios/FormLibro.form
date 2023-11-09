@@ -398,11 +398,15 @@
         <Component class="javax.swing.JComboBox" name="cbxOrdenar">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="4">
+              <StringArray count="8">
                 <StringItem index="0" value="Ninguno"/>
                 <StringItem index="1" value="Codigo"/>
                 <StringItem index="2" value="Nombre"/>
-                <StringItem index="3" value="Tipo edici&#xf3;n"/>
+                <StringItem index="3" value="Tipo editorial"/>
+                <StringItem index="4" value="Clase"/>
+                <StringItem index="5" value="A&#xf1;o edici&#xf3;n"/>
+                <StringItem index="6" value="Numero de p&#xe1;ginas"/>
+                <StringItem index="7" value="Costo"/>
               </StringArray>
             </Property>
           </Properties>

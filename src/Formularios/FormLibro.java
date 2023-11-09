@@ -318,15 +318,154 @@ public class FormLibro extends javax.swing.JFrame {
         for (int q = 0; q < (tamano - 1); q++) {
             for (int p = 0; p < (tamano - 1) - q; p++) {
 
-                String nombreAnt = arregloLibros.obtenerLibro(p).getNombre();
-                String nombreSig = arregloLibros.obtenerLibro(p + 1).getNombre();
+                int posActual = p;
+                int posSiguiente = posActual + 1;
 
-                if (nombreAnt.compareToIgnoreCase(nombreSig) > 0) {
-                    aux = arregloLibros.obtenerLibro(p);
-                    arregloLibros.reemplazarLibro(p, arregloLibros.obtenerLibro(p + 1));
-                    arregloLibros.reemplazarLibro(p + 1, aux);
+                String xActual = arregloLibros.obtenerLibro(posActual).getNombre();
+                String xSiguiente = arregloLibros.obtenerLibro(posSiguiente).getNombre();
+
+                if (xActual.compareToIgnoreCase(xSiguiente) > 0) {
+                    aux = arregloLibros.obtenerLibro(posActual);
+                    arregloLibros.reemplazarLibro(posActual, arregloLibros.obtenerLibro(posSiguiente));
+                    arregloLibros.reemplazarLibro(posSiguiente, aux);
                 }
             }
+        }
+
+        actualizarTabla();
+    }
+
+    public void ordenarPorTipo() {
+        int tamano = arregloLibros.totalLibros();
+        int j;
+        Libro aux;
+
+        for (int i = 1; i < tamano; i++) {
+
+            j = i;
+
+            while (j != 0) {
+
+                int posActual = j;
+                int posAnterior = posActual - 1;
+
+                String xActual = arregloLibros.obtenerLibro(posActual).getTipo();
+                String xAnterior = arregloLibros.obtenerLibro(posAnterior).getTipo();
+
+                if (xActual.compareToIgnoreCase(xAnterior) > 0) {
+
+                    aux = arregloLibros.obtenerLibro(posActual);
+                    arregloLibros.reemplazarLibro(posActual, arregloLibros.obtenerLibro(posAnterior));
+                    arregloLibros.reemplazarLibro(posAnterior, aux);
+
+                }
+            }
+        }
+
+        actualizarTabla();
+    }
+
+    public void ordenarPorClase() {
+        int tamano = arregloLibros.totalLibros();
+        Libro aux;
+
+        for (int q = 0; q < (tamano - 1); q++) {
+            for (int p = 0; p < (tamano - 1) - q; p++) {
+
+                int posActual = p;
+                int posSiguiente = posActual + 1;
+
+                String xActual = arregloLibros.obtenerLibro(posActual).getClase();
+                String xSiguiente = arregloLibros.obtenerLibro(posSiguiente).getClase();
+
+                if (xActual.compareToIgnoreCase(xSiguiente) > 0) {
+                    aux = arregloLibros.obtenerLibro(posActual);
+                    arregloLibros.reemplazarLibro(posActual, arregloLibros.obtenerLibro(posSiguiente));
+                    arregloLibros.reemplazarLibro(posSiguiente, aux);
+                }
+            }
+        }
+
+        actualizarTabla();
+    }
+
+    public void ordenarPorAnio() {
+        int tamano = arregloLibros.totalLibros();
+        int j;
+        Libro aux;
+
+        for (int i = 1; i < tamano; i++) {
+
+            j = i;
+
+            while (j != 0) {
+
+                int posActual = j;
+                int posAnterior = posActual - 1;
+
+                int xActual = arregloLibros.obtenerLibro(posActual).getAnio();
+                int xAnterior = arregloLibros.obtenerLibro(posAnterior).getAnio();
+
+                if (xActual < xAnterior) {
+
+                    aux = arregloLibros.obtenerLibro(posActual);
+                    arregloLibros.reemplazarLibro(posActual, arregloLibros.obtenerLibro(posAnterior));
+                    arregloLibros.reemplazarLibro(posAnterior, aux);
+
+                }
+            }
+        }
+
+        actualizarTabla();
+    }
+
+    public void ordenarPorNumPag() {
+        int tamano = arregloLibros.totalLibros();
+        int menor;
+        Libro aux;
+
+        for (int p = 0; p < (tamano - 1); p++) {
+
+            menor = p;
+
+            for (int q = (p + 1); q < tamano; q++) {
+                int xSiguiente = arregloLibros.obtenerLibro(q).getNumPagina();
+                int xActual = arregloLibros.obtenerLibro(menor).getNumPagina();
+
+                if (xSiguiente < xActual) {
+                    menor = q;
+                }
+            }
+
+            aux = arregloLibros.obtenerLibro(p);
+            arregloLibros.reemplazarLibro(p, arregloLibros.obtenerLibro(menor));
+            arregloLibros.reemplazarLibro(menor, aux);
+        }
+
+        actualizarTabla();
+    }
+
+    public void ordenarPorCosto() {
+        int tamano = arregloLibros.totalLibros();
+        int menor;
+        Libro aux;
+
+        for (int p = 0; p < (tamano - 1); p++) {
+
+            menor = p;
+
+            for (int q = (p + 1); q < tamano; q++) {
+                int xSiguiente = arregloLibros.obtenerLibro(q).getNumPagina();
+                int xActual = arregloLibros.obtenerLibro(menor).getNumPagina();
+
+                if (xSiguiente < xActual) {
+                    menor = q;
+                }
+            }
+
+            aux = arregloLibros.obtenerLibro(p);
+            arregloLibros.reemplazarLibro(p, arregloLibros.obtenerLibro(menor));
+            arregloLibros.reemplazarLibro(menor, aux);
         }
 
         actualizarTabla();
@@ -561,7 +700,7 @@ public class FormLibro extends javax.swing.JFrame {
 
         jLabel8.setText("Ordenar por:");
 
-        cbxOrdenar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ninguno", "Codigo", "Nombre", "Tipo edición" }));
+        cbxOrdenar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ninguno", "Codigo", "Nombre", "Tipo editorial", "Clase", "Año edición", "Numero de páginas", "Costo" }));
         cbxOrdenar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbxOrdenarActionPerformed(evt);
@@ -774,11 +913,21 @@ public class FormLibro extends javax.swing.JFrame {
             case 2:
                 ordenarPorNombre();
                 break;
-            // case 3:break;
-            // case 4:break;
-            // case 5:break;
-            // case 6:break;
-            // case 7:break;
+            case 3:
+                ordenarPorTipo();
+                break;
+            case 4:
+                ordenarPorClase();
+                break;
+            case 5:
+                ordenarPorAnio();
+                break;
+            case 6:
+                ordenarPorNumPag();
+                break;
+            case 7:
+                ordenarPorCosto();
+                break;
         }
     }//GEN-LAST:event_cbxOrdenarActionPerformed
 
